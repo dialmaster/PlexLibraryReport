@@ -1,42 +1,48 @@
 import configparser
-from plexapi.server import PlexServer
+import requests
 from collections import defaultdict
 
 def read_config():
     config = configparser.ConfigParser()
     config.read('plex_config.ini')
-    return config['PLEX']['baseurl'], config['PLEX']['token']
+    return config['SONARR']['baseurl'], config['SONARR']['apikey']
 
 # Read configuration
-baseurl, token = read_config()
+baseurl, apikey = read_config()
 
-# Connect to your Plex server
-plex = PlexServer(baseurl, token)
+# Set up the API request
+url = f"{baseurl}/api/v3/series"
+headers = {
+    "X-Api-Key": apikey
+}
 
-# Get the TV Shows library
-tv_library = plex.library.section('TV Shows')  # Change 'TV Shows' if your library has a different name
+# Make the API request
+response = requests.get(url, headers=headers)
+series_data = response.json()
 
-total_series = 0
+# Initialize counters
+total_series = len(series_data)
 total_episodes = 0
+available_episodes = 0
 complete_series = 0
 partial_series = 0
 series_stats = defaultdict(lambda: {'total_episodes': 0, 'available_episodes': 0})
 
-# Iterate through all TV series
-for show in tv_library.all():
-    total_series += 1
-    show_complete = True
-    
-    for season in show.seasons():
-        for episode in season.episodes():
-            series_stats[show.title]['total_episodes'] += 1
-            if episode.media:  # Check if the episode has media
-                series_stats[show.title]['available_episodes'] += 1
-                total_episodes += 1
-            else:
-                show_complete = False
+# Process the data
+for series in series_data:
+    series_title = series['title']
+    series_complete = True
 
-    if show_complete:
+    for season in series['seasons']:
+        total_episodes += season['statistics']['totalEpisodeCount']
+        available_episodes += season['statistics']['episodeFileCount']
+        series_stats[series_title]['total_episodes'] += season['statistics']['totalEpisodeCount']
+        series_stats[series_title]['available_episodes'] += season['statistics']['episodeFileCount']
+
+        if season['statistics']['episodeFileCount'] < season['statistics']['totalEpisodeCount']:
+            series_complete = False
+
+    if series_complete:
         complete_series += 1
     else:
         partial_series += 1
@@ -44,6 +50,7 @@ for show in tv_library.all():
 # Print results
 print(f"Total TV Series: {total_series}")
 print(f"Total Episodes: {total_episodes}")
+print(f"Available Episodes: {available_episodes}")
 print(f"Complete Series: {complete_series}")
 print(f"Partial Series: {partial_series}")
 
