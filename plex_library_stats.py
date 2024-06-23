@@ -30,9 +30,9 @@ def get_resolution_category(resolution):
         width = int(resolution.split('x')[0])
         if width >= 3840:
             return '4K'
-        elif width >= 1920:
+        elif width > 1280:
             return '1080p+'
-        elif width >= 1280:
+        elif width == 1280:
             return '720p'
         else:
             return 'Under 720p'
