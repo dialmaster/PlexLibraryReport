@@ -9,7 +9,10 @@ PlexLibraryReport is a Python script that generates a detailed report of your me
 - Distinguishes between complete and partial TV series
 - Categorizes movies by resolution (4K, 1080p+, 720p, Under 720p)
 - Provides a breakdown of total and available episodes for TV series
-- Displays statistics in formatted tables
+- Displays statistics in formatted tables with colored output
+- Supports command-line arguments for configuration and output options
+- Includes progress bars for processing large libraries
+- Implements error handling and logging for better debugging
 
 ## Prerequisites
 
@@ -45,7 +48,7 @@ Before you begin, ensure you have met the following requirements:
 
 4. Install the required packages:
    ```
-   pip install requests configparser prettytable
+   pip install requests configparser prettytable colorama tqdm
    ```
 
 ## Configuration
@@ -69,10 +72,20 @@ Before you begin, ensure you have met the following requirements:
 
 ## Usage
 
-To run the script, ensure your virtual environment is activated, then execute:
+To run the script with default settings, ensure your virtual environment is activated, then execute:
 
 ```
 python plex_library_stats.py
+```
+
+You can also use command-line arguments:
+
+- `--config`: Specify a custom config file location (default is `plex_config.ini` in the current directory)
+- `--output`: Specify a file to save the JSON output
+
+Example:
+```
+python plex_library_stats.py --config my_config.ini --output results.json
 ```
 
 The script will output the following information:
@@ -92,10 +105,11 @@ For TV Shows:
 
 If you encounter any issues:
 
-1. Ensure your `plex_config.ini` file is correctly set up and in the same directory as the script.
-2. Verify that your Sonarr and Radarr servers are running and accessible.
-3. Check that you're using the correct API keys for both Sonarr and Radarr.
-4. Make sure you've installed all required packages in your virtual environment.
+1. Check the `plex_library_stats.log` file for error messages and debugging information.
+2. Ensure your `plex_config.ini` file is correctly set up and in the specified location.
+3. Verify that your Sonarr and Radarr servers are running and accessible.
+4. Check that you're using the correct API keys for both Sonarr and Radarr.
+5. Make sure you've installed all required packages in your virtual environment.
 
 If problems persist, please open an issue on the GitHub repository.
 
