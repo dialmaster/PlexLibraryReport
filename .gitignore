@@ -1,2 +1,4 @@
 plex_config.ini
 plex_env
+rating_rules.yml
+*.log

@@ -1,0 +1,12 @@
+[SONARR]
+baseurl = http://localhost:8989
+apikey = YOUR_API_KEY
+
+[RADARR]
+baseurl = http://localhost:7878
+apikey = YOUR_API_KEY
+
+[PLEX]
+baseurl = http://localhost:32400
+token = YOUR_API_KEY
+library = SOME_LIBRARY_NAME
